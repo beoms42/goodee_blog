@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import vo.*;
 import java.sql.*;
-
+import java.io.File;
 import vo.Photo;
 
 public class PhotoDao {
@@ -35,9 +35,38 @@ public class PhotoDao {
 	}
 	
 	// 이미지 삭제
-	public int deletePhoto(int photoNo, String photoPw) { 
+	public HashMap<String, Object> deletePhoto(int photoNo, String photoPw) throws Exception { 
 		int row = 0;
-		return row;
+		Class.forName("org.mariadb.jdbc.Driver");
+		//커넥션 > 디비로 연결
+		Connection conn = null;
+		String dburl = "jdbc:mariadb://localhost:3306/blog";
+		String dbuser = "root";
+		String dbpw = "java1234";
+		// 디비연결
+		conn = DriverManager.getConnection(dburl, dbuser, dbpw);
+		
+		//삭제당하면 upload를 삭제할수가 없음.. 그래서 미리 받아둬야할듯
+		Photo ph = selectPhotoOne(photoNo);
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put("photoName", ph.photoName);
+		
+		
+		//쿼리 연결  
+		String deleteSql = "DELETE FROM photo WHERE photo_no=? AND photo_pw=?";
+		//삭제하고
+		PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
+		deleteStmt.setInt(1, photoNo);
+		deleteStmt.setString(2, photoPw);
+		
+		//executeQuery > resultset으로 받아야하고, update는 그냥 update로, int 반환
+		row = deleteStmt.executeUpdate();
+		System.out.println(row +"<---------- row");
+		hm.put("row", row);
+		//업로드 안에 파일도 삭제해야함.. 근데 여기서 삭제하는법은 모르고,, jsp에서 삭제해야할듯?
+		deleteStmt.close();
+		conn.close();
+		return hm;
 	}
 	
 	// 전체 행의 수
@@ -84,8 +113,33 @@ public class PhotoDao {
 	}
 	
 	// 이미지 하나 상세보기
-	public Photo selectPhotoOne(int photoNo) {
-		Photo photo = null;
-		return photo;
+	public Photo selectPhotoOne(int photoNo) throws Exception {
+		Photo ph = null;
+		Class.forName("org.mariadb.jdbc.Driver");
+		//커넥션 > 디비로 연결
+		Connection conn = null;
+		String dburl = "jdbc:mariadb://localhost:3306/blog";
+		String dbuser = "root";
+		String dbpw = "java1234";
+		// 디비연결
+		conn = DriverManager.getConnection(dburl, dbuser, dbpw);
+		
+		//쿼리 연결 
+		String insertSql = "select * from photo where photo_No = ?";
+		
+		PreparedStatement insertStmt = conn.prepareStatement(insertSql);
+		insertStmt.setInt(1, photoNo);
+		
+		ResultSet insertRs = insertStmt.executeQuery();
+		
+		if(insertRs.next()) {
+			ph = new Photo();
+			ph.photoName = insertRs.getString("photo_name");
+			ph.photoNo = insertRs.getInt("photo_no");
+			ph.photoOriginalName = insertRs.getString("photo_original");
+			ph.photoType = insertRs.getString("photo_type");
+			ph.writer = insertRs.getString("writer");
+		}
+		return ph;
 	}
 }

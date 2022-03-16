@@ -34,7 +34,7 @@
 	  <div class="container col-sm-1">
 	  </div>
 	  
-	  <div class="col-sm-5 container">	
+	  <div class="col-sm-7 container">	
 	  		<br>
 			<h1>이미지 목록</h1>
 			<table class="table table-striped">
@@ -45,26 +45,26 @@
 						i++;
 				%>
 							<td>
-								<a href="<%=request.getContextPath()%>/photo/selectPhotoOne.jsp=photoNo=<%=p.photoNo%>">
+								<a href="<%=request.getContextPath()%>/photo/selectPhotoOne.jsp?photoNo=<%=p.photoNo%>">
 									<img src="<%=request.getContextPath()%>/upload/<%=p.photoName%>" width="200">
 									<!--  상세보기에서는 원본이미지 크기로 -->
 								</a>
 							</td>
 				<%		
-					if(i == 3) {
+					if(i == 5) {
 						%>
 						</tr><tr>
 						
 						<%			
 						i = 0;
-					}
+					}	
 				}
 				%>
 				</tr>
 			</table>
 	  </div>
 	  
-	  <div class="col-sm-4 container">
+	  <div class="col-sm-2 container">
 	  </div>
 	</div>
 	
