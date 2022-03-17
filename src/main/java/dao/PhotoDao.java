@@ -78,7 +78,7 @@ public class PhotoDao {
 	// 이미지 목록
 	public ArrayList<Photo> selectPhotoListByPage(int beginRow, int rowPerPage) throws Exception {
 		ArrayList<Photo> list = new ArrayList<Photo>();
-		Photo ph = ph = new Photo();
+		Photo ph = null;
 		
 		Class.forName("org.mariadb.jdbc.Driver");
 		//커넥션 > 디비로 연결
@@ -90,7 +90,7 @@ public class PhotoDao {
 		conn = DriverManager.getConnection(dburl, dbuser, dbpw);
 		
 		//쿼리 연결 
-		String insertSql = "select * from photo order by photo_no DESC LIMIT ?, ?";
+		String insertSql = "select * from photo LIMIT ?, ?";
 		
 		PreparedStatement insertStmt = conn.prepareStatement(insertSql);
 		
@@ -100,14 +100,19 @@ public class PhotoDao {
 		ResultSet insertRs = insertStmt.executeQuery();
 		
 		while(insertRs.next()) {
-			
+			ph  = new Photo();
 			ph.photoName = insertRs.getString("photo_name");
+			System.out.println(ph.photoName +" < --------- ph.photoName222222222222");
 			ph.photoNo = insertRs.getInt("photo_no");
 			ph.photoOriginalName = insertRs.getString("photo_original");
 			ph.photoType = insertRs.getString("photo_type");
 			ph.writer = insertRs.getString("writer");
 			
 			list.add(ph);
+		}
+		
+		for(Photo s  : list) {
+			System.out.println(s.photoName+"33333333333333");
 		}
 		return list;
 	}
@@ -134,6 +139,7 @@ public class PhotoDao {
 		
 		if(insertRs.next()) {
 			ph = new Photo();
+			
 			ph.photoName = insertRs.getString("photo_name");
 			ph.photoNo = insertRs.getInt("photo_no");
 			ph.photoOriginalName = insertRs.getString("photo_original");

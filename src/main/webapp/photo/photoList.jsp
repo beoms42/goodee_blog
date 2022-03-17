@@ -4,11 +4,13 @@
 <%@ page import="dao.*" %>
 <%
 	int beginRow = 0;
-	int rowPerPage = 9;
+	int rowPerPage = 30;
 
 	PhotoDao photoDao = new PhotoDao();
-	ArrayList<Photo> list = photoDao.selectPhotoListByPage(beginRow, rowPerPage);
-%>
+	ArrayList<Photo> list2 = photoDao.selectPhotoListByPage(beginRow, rowPerPage);
+	
+	
+%> 
 
 <!DOCTYPE html>
 <html>
@@ -41,12 +43,12 @@
 				<tr>
 				<%
 					int i = 0;
-					for(Photo p : list) {
+					for(Photo p : list2) {
 						i++;
 				%>
 							<td>
 								<a href="<%=request.getContextPath()%>/photo/selectPhotoOne.jsp?photoNo=<%=p.photoNo%>">
-									<img src="<%=request.getContextPath()%>/upload/<%=p.photoName%>" width="200">
+									<img src="<%=request.getContextPath()%>/upload/<%=p.photoName%>" width="200" >
 									<!--  상세보기에서는 원본이미지 크기로 -->
 								</a>
 							</td>
